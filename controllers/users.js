@@ -18,8 +18,19 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUserId = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then((user) => res.status(200).send(user))
-    .catch(next);
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError('Пользователь с таким id не найден.'));
+      }
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new CastError('Переданы некорректные данные при создании пользователя.'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.createUser = (req, res, next) => {
