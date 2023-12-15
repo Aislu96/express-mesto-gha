@@ -51,18 +51,20 @@ module.exports.createUser = (req, res, next) => {
 module.exports.patchMe = (req, res, next) => {
   const userId = req.user._id;
   const { name, about } = req.body;
-  User.findByIdAndUpdate(userId, { name, about })
+  User.findByIdAndUpdate(userId, { name, about }, { runValidators: true })
     .then((user) => {
-      if (user) {
-        return res.status(200).send({
-          _id: userId, name, about, avatar: user.avatar,
-        });
+      if (!user) {
+        next(new NotFoundError('Пользователь с таким id не найден.'));
       }
-      throw new NotFoundError('Пользователь с таким id не найден.');
+      return res.status(200).send({
+        _id: userId, name, about, avatar: user.avatar,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new CastError('Переданы некорректные данные при обновлении профиля.'));
+      } else if (err.name === 'ValidationError') {
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
