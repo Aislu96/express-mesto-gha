@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
+const CastError = require("../errors/CastError");
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -18,7 +19,6 @@ module.exports.getUserId = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
     .then((user) => {
-      if (!user) next(new NotFoundError('Пользователь по указанному _id не найден.'));
       return res.status(200).send(user);
     })
     .catch(next);
@@ -52,8 +52,8 @@ module.exports.patchMe = (req, res, next) => {
       throw new NotFoundError('Пользователь с таким id не найден.');
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные при обновлении профиля.'));
+      if (err.name === 'CastError') {
+        next(new CastError('Переданы некорректные данные при обновлении профиля.'));
       } else {
         next(err);
       }

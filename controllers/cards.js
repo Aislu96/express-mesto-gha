@@ -1,12 +1,13 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
+const CastError = require("../errors/CastError");
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные при создании карточки.'));
       } else {
         next(err);
@@ -32,7 +33,6 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
     .then((card) => {
-      if (!card) next(new NotFoundError('Карточка с указанным _id не найдена.'));
       return res.status(200).send(card);
     })
     .catch(next);
@@ -76,8 +76,8 @@ module.exports.dislikeCard = (req, res, next) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные для постановки/снятии лайка.'));
+      if (err.name === 'CastError') {
+        next(new CastError('Переданы некорректные данные для постановки/снятии лайка.'));
       } else {
         next(err);
       }
