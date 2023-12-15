@@ -1,16 +1,33 @@
-[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
+------
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)]()
 
-## Директории
+## Описание проекта:
 
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
+------
 
-## Запуск проекта
+## Функционал:
 
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+* [Одностраничный сайт](https://aislu96.github.io/mesto-react/)
+
+------
+
+## Стек:
+
+* Node.js 
+* Express.js
+* MongoDB
+* Postman
+
+------
+
+## Технологии проекта:
+
+* Серверная разработка
+* Система модулей на Node.js
+* Тестирование сервера: Postman
+* Работа с базой данных
+* Создание, чтение, обновление и удаление документов
+* Обработка ошибок
+------
