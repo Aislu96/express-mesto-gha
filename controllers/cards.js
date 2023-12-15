@@ -80,7 +80,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточки не существует'));
+        throw new NotFoundError('Передан несуществующий _id карточки.');
       }
       return res.status(200).send(card);
     })
