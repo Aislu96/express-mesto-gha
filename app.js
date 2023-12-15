@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const errorHandler = require('./errors/errorHandler');
-const NotFoundError = require("./errors/NotFoundError");
+const NotFoundError = require('./errors/NotFoundError');
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -24,6 +24,7 @@ app.use((req, res, next) => {
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+
 app.all('*', (req, res, next) => {
   next(new NotFoundError('Неправильный путь'));
 });

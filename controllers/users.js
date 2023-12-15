@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
-const CastError = require("../errors/CastError");
+const CastError = require('../errors/CastError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -18,9 +18,7 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUserId = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then((user) => {
-      return res.status(200).send(user);
-    })
+    .then((user) => res.status(200).send(user))
     .catch(next);
 };
 

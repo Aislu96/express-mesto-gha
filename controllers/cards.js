@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
-const CastError = require("../errors/CastError");
+const CastError = require('../errors/CastError');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -32,9 +32,7 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
-    .then((card) => {
-      return res.status(200).send(card);
-    })
+    .then((card) => res.status(200).send(card))
     .catch(next);
 };
 
