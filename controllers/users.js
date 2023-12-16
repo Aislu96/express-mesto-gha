@@ -70,7 +70,7 @@ module.exports.patchMe = (req, res, next) => {
 module.exports.patchMeAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
-  User.findByIdAndUpdate(userId, { avatar })
+  User.findByIdAndUpdate(userId, { avatar }, { runValidators: true })
     .then((user) => {
       if (user) {
         return res.send({

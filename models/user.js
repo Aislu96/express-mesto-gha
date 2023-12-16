@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+const isUrl = require('validator/lib/isURL');
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Поле "avatar" должно быть заполнено'],
       validate: {
-        validator: (v) => validator.isURL(v),
+        validator: (v) => isUrl(v),
         message: 'Некорректный URL',
       },
     },
