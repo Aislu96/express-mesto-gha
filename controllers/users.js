@@ -5,13 +5,12 @@ const CastError = require('../errors/CastError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные при создании пользователя.'));
-      } else {
-        next(err);
+        return next(new ValidationError('Переданы некорректные данные при создании пользователя.'));
       }
+      return next(err);
     });
 };
 
@@ -20,16 +19,15 @@ module.exports.getUserId = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь с таким id не найден.'));
+        return next(new NotFoundError('Пользователь с таким id не найден.'));
       }
-      return res.status(200).send(user);
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Переданы некорректные данные при создании пользователя.'));
-      } else {
-        next(err);
+        return next(new CastError('Переданы некорректные данные при создании пользователя.'));
       }
+      return next(err);
     });
 };
 
@@ -37,14 +35,13 @@ module.exports.createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.status(201).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные при создании пользователя.'));
-      } else {
-        next(err);
+        return next(new ValidationError('Переданы некорректные данные при создании пользователя.'));
       }
+      return next(err);
     });
 };
 
@@ -54,20 +51,19 @@ module.exports.patchMe = (req, res, next) => {
   User.findByIdAndUpdate(userId, { name, about }, { runValidators: true })
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь с таким id не найден.'));
+        return next(new NotFoundError('Пользователь с таким id не найден.'));
       }
-      return res.status(200).send({
+      return res.send({
         _id: userId, name, about, avatar: user.avatar,
       });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Переданы некорректные данные при обновлении профиля.'));
-      } else if (err.name === 'ValidationError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
+        return next(new CastError('Переданы некорректные данные при обновлении профиля.'));
+      } if (err.name === 'ValidationError') {
+        return next(new ValidationError(err.message));
       }
+      return next(err);
     });
 };
 
@@ -77,7 +73,7 @@ module.exports.patchMeAvatar = (req, res, next) => {
   User.findByIdAndUpdate(userId, { avatar })
     .then((user) => {
       if (user) {
-        return res.status(200).send({
+        return res.send({
           _id: userId, name: user.name, about: user.about, avatar,
         });
       }
@@ -85,9 +81,8 @@ module.exports.patchMeAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные при обновлении аватара.'));
-      } else {
-        next(err);
+        return next(new ValidationError('Переданы некорректные данные при обновлении аватара.'));
       }
+      return next(err);
     });
 };

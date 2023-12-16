@@ -2,18 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
 const errorHandler = require('./errors/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 
 // Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', () => console.log('База запущена'));
+mongoose.connect(DB_URL);
 
 app.use((req, res, next) => {
   req.user = {
@@ -32,7 +34,4 @@ app.all('*', (req, res, next) => {
 app.use(errors());
 
 app.use(errorHandler);
-app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT);
