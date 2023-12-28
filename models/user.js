@@ -10,11 +10,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: [2, 'Минимальная длина поля "name" - 2'],
       maxlength: [30, 'Максимальная длина поля "name" - 30'],
+      default: 'Айсылу',
     },
     about: {
       type: String,
       minlength: [2, 'Минимальная длина поля "about" - 2'],
       maxlength: [30, 'Максимальная длина поля "about" - 30'],
+      default: 'Разработчик',
     },
     avatar: {
       type: String,
@@ -22,6 +24,7 @@ const userSchema = new mongoose.Schema(
         validator: (v) => isUrl(v),
         message: 'Некорректный URL',
       },
+      default: 'https://www.supersadovnik.ru/binfiles/images/20220425/be4fb6d2.jpg',
     },
     email: {
       type: String,
