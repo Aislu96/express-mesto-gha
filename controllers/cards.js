@@ -32,20 +32,18 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findById(cardId)
+  Card.findById(cardId).orFail()
     .then((card) => {
       if (req.user._id !== card.owner.toString()) {
         next(new Forbidden('Отсутствуют права на удаление карточки'));
       }
-    });
-  Card.findByIdAndRemove(cardId)
-    .then((card) => {
-      if (!card) {
-        return next(new NotFoundError('Передан несуществующий _id карточки.'));
-      }
-      return res.send(card);
+      Card.findByIdAndRemove(cardId)
+        .then(() => res.send(card));
     })
     .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new NotFoundError('Передан несуществующий _id карточки.'));
+      }
       if (err.name === 'CastError') {
         return next(new CastError('Переданы некорректные данные при удалении карточки.'));
       }
