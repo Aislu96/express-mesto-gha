@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 const CastError = require('../errors/CastError');
+const Forbidden = require('../errors/ForbiddenError');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -20,8 +21,10 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return next(new ValidationError('Переданы некорректные данные при создании карточки.'));
+      } if (err.name === 'CastError') {
+        return next(new CastError('Переданы некорректные данные при создании карточки.'));
       }
       return next(err);
     });
@@ -29,6 +32,12 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
+  Card.findById(cardId)
+    .then((card) => {
+      if (req.user._id !== card.owner.toString()) {
+        next(new Forbidden('Отсутствуют права на удаление карточки'));
+      }
+    });
   Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
@@ -59,8 +68,10 @@ module.exports.likeCard = (req, res, next) => {
       return res.send(card);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return next(new ValidationError('Переданы некорректные данные для постановки/снятии лайка.'));
+      } if (err.name === 'CastError') {
+        return next(new CastError('Переданы некорректные данные для постановки/снятии лайка.'));
       }
       return next(err);
     });
