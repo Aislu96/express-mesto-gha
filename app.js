@@ -7,7 +7,7 @@ const { celebrate, Joi } = require('celebrate');
 const errorHandler = require('./errors/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 const { pattern } = require('./utils/pattern');
 // Слушаем 3000 порт
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
@@ -46,8 +46,8 @@ app.post('/signup', celebrate({
 }), createUser);
 
 // app.use(auth);
-app.use('/users', auth, require('./routes/users'));
-app.use('/cards', auth, require('./routes/cards'));
+app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
 
 app.all('*', (req, res, next) => {
   next(new NotFoundError('Неправильный путь'));
