@@ -9,21 +9,21 @@ const auth = require('../middlewares/auth');
 
 router.get('/', auth, getUsers);
 router.get('/me', auth, getMe);
-router.get('/:userId', auth, celebrate({
+router.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().length(24).required(),
   }),
-}), getUserId);
-router.patch('/me', auth, celebrate({
+}), auth, getUserId);
+router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     about: Joi.string().min(2).max(30).required(),
   }),
-}), patchMe);
-router.patch('/me/avatar', auth, celebrate({
+}), auth, patchMe);
+router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().regex(pattern).required(),
   }),
-}), patchMeAvatar);
+}), auth, patchMeAvatar);
 
 module.exports = router;
