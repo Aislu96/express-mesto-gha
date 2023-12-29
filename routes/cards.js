@@ -7,12 +7,12 @@ const { pattern } = require('../utils/pattern');
 const auth = require('../middlewares/auth');
 
 router.get('/', auth, getCards);
-router.post('/', auth, celebrate({
+router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().regex(pattern),
   }),
-}), createCard);
+}), auth, createCard);
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().length(24).hex(),
