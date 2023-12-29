@@ -45,13 +45,14 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
+app.all('*', (req, res, next) => {
+  next(new NotFoundError('Неправильный путь'));
+});
+
 app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.all('*', (req, res, next) => {
-  next(new NotFoundError('Неправильный путь'));
-});
 
 app.use(errors());
 
