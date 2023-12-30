@@ -1,21 +1,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
 const errorHandler = require('./errors/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 const { login, createUser } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
-const { pattern } = require('./utils/pattern');
+const { urlPattern } = require('./utils/urlPattern');
 // Слушаем 3000 порт
+require('dotenv').config();
+
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
 mongoose.connect(DB_URL);
@@ -39,7 +39,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(pattern),
+    avatar: Joi.string().regex(urlPattern),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),

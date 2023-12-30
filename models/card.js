@@ -19,17 +19,17 @@ const cardSchema = new mongoose.Schema(
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
       required: [true, 'Поле "owner" должно быть заполнено'],
     },
     likes: [{
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
       default: [],
-      required: [true, 'Поле "likes" должно быть заполнено'],
     }],
     createdAt: {
       type: Date,
       default: Date.now,
-      required: [true, 'Поле "createdAt" должно быть заполнено'],
     },
   },
   { versionKey: false },
